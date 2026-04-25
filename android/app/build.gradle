@@ -67,7 +67,7 @@ android {
     defaultConfig {
         // Unique application identifier on Play Store.
         applicationId = "dev.allc.a_clock"
-        minSdk = 23
+        minSdkVersion = flutter.minSdkVersion
         targetSdk = 35
         versionCode = flutter.versionCode
         versionName = flutter.versionName

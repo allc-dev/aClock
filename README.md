@@ -11,7 +11,7 @@ Play Store: [aClock on Google Play](https://play.google.com/store/apps/details?i
 
 ## ✨ Features
 
-- **Immersive Full Screen**: The clock occupies the entire screen, without status bars or navigation.
+- **Immersive Full Screen**:   The clock occupies the entire screen, without status bars or navigation.
 - **High Customization**:
   - Change background color.
   - Change font color.
