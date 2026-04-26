@@ -39,14 +39,14 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace = "dev.allc.a_clock"
-    compileSdk = 35
+    compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
-    // Garantir libs nativas não extraídas e alinhadas (necessário para 16 KB page size)
+    // Mantemos libs nativas compactadas no bundle para preservar o caminho já validado
+    // para publicação com 16 KB, mesmo após a atualização do AGP.
     packaging {
         jniLibs {
-            // Mantém libs dentro do APK não comprimidas, para mmap direto
-            useLegacyPackaging false
+            useLegacyPackaging true
         }
         // resources {
         //     excludes += ["META-INF/DEPENDENCIES", "META-INF/NOTICE", "META-INF/NOTICE.txt", "META-INF/LICENSE", "META-INF/LICENSE.txt"]
