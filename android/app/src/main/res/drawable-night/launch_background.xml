@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Night override: force a light splash background even when system is in dark mode -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Use a solid white background so the splash stays light in dark mode -->
+    <item android:drawable="@android:color/white" />
+
+    <!-- If you want to show a centered image, uncomment and set your launch image here -->
+    <!--
+    <item>
+        <bitmap
+            android:gravity="center"
+            android:src="@mipmap/launch_image" />
+    </item>
+    -->
+</layer-list>

@@ -32,7 +32,7 @@ class _FlipClockLayoutState extends State<FlipClockLayout> {
   Widget build(BuildContext context) {
     final themeManager = Provider.of<ThemeManager>(context, listen: true);
     final theme = themeManager.currentTheme;
-    
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: StreamBuilder<DateTime>(
@@ -61,9 +61,11 @@ class _FlipClockLayoutState extends State<FlipClockLayout> {
     );
   }
 
-  Widget _buildPortraitLayout(DateTime now, Stream<int> hourStream, int initialHour, AppThemePreset theme) {
+  Widget _buildPortraitLayout(DateTime now, Stream<int> hourStream,
+      int initialHour, AppThemePreset theme) {
     final locale = Localizations.localeOf(context).toLanguageTag();
-    final dateStr = widget.showDate ? DateFormat.yMMMMEEEEd(locale).format(now) : null;
+    final dateStr =
+        widget.showDate ? DateFormat.yMMMMEEEEd(locale).format(now) : null;
 
     return SingleChildScrollView(
       child: Column(
@@ -72,16 +74,19 @@ class _FlipClockLayoutState extends State<FlipClockLayout> {
           const SizedBox(height: 20),
           _buildFlipWidget('hour', hourStream, initialHour, theme: theme),
           const SizedBox(height: 16),
-          _buildFlipWidget('minute', widget.timeStream.map((t) => t.minute), now.minute, theme: theme),
+          _buildFlipWidget(
+              'minute', widget.timeStream.map((t) => t.minute), now.minute,
+              theme: theme),
           if (widget.showSecondsInPortrait) ...[
             const SizedBox(height: 16),
-            _buildFlipWidget('second', widget.timeStream.map((t) => t.second), now.second, theme: theme),
+            _buildFlipWidget(
+                'second', widget.timeStream.map((t) => t.second), now.second,
+                theme: theme),
           ],
           if (!widget.use24HourFormat) ...[
             const SizedBox(height: 20),
             _buildAmPmIndicator(now, theme),
           ],
-          
           if (dateStr != null) ...[
             const SizedBox(height: 32),
             Container(
@@ -109,9 +114,11 @@ class _FlipClockLayoutState extends State<FlipClockLayout> {
     );
   }
 
-  Widget _buildLandscapeLayout(DateTime now, Stream<int> hourStream, int initialHour, AppThemePreset theme) {
+  Widget _buildLandscapeLayout(DateTime now, Stream<int> hourStream,
+      int initialHour, AppThemePreset theme) {
     final locale = Localizations.localeOf(context).toLanguageTag();
-    final dateStr = widget.showDate ? DateFormat.yMMMMEEEEd(locale).format(now) : null;
+    final dateStr =
+        widget.showDate ? DateFormat.yMMMMEEEEd(locale).format(now) : null;
 
     return SingleChildScrollView(
       child: Column(
@@ -126,11 +133,15 @@ class _FlipClockLayoutState extends State<FlipClockLayout> {
               const SizedBox(width: 12),
               _buildSeparator(theme),
               const SizedBox(width: 12),
-              _buildFlipWidget('minute', widget.timeStream.map((t) => t.minute), now.minute, theme: theme),
+              _buildFlipWidget(
+                  'minute', widget.timeStream.map((t) => t.minute), now.minute,
+                  theme: theme),
               const SizedBox(width: 12),
               _buildSeparator(theme),
               const SizedBox(width: 12),
-              _buildFlipWidget('second', widget.timeStream.map((t) => t.second), now.second, theme: theme),
+              _buildFlipWidget(
+                  'second', widget.timeStream.map((t) => t.second), now.second,
+                  theme: theme),
               if (!widget.use24HourFormat) ...[
                 const SizedBox(width: 20),
                 _buildAmPmIndicator(now, theme),
@@ -163,20 +174,26 @@ class _FlipClockLayoutState extends State<FlipClockLayout> {
     );
   }
 
-  Widget _buildFlipWidget(String id, Stream<int> stream, int initialValue, {String? header, required AppThemePreset theme}) {
+  Widget _buildFlipWidget(String id, Stream<int> stream, int initialValue,
+      {String? header, required AppThemePreset theme}) {
     final cardHeight = widget.fontSize * 1.9;
     final cardWidth = widget.fontSize * 1.6;
 
     final baseColor = theme.flipCardColor;
     final hsl = HSLColor.fromColor(baseColor);
 
-    // Gradients for depth
-    final topColor = hsl.withLightness((hsl.lightness + 0.12).clamp(0.0, 1.0)).toColor();
-    final midTopColor = hsl.withLightness((hsl.lightness + 0.06).clamp(0.0, 1.0)).toColor();
-    final midBottomColor = hsl.withLightness((hsl.lightness - 0.06).clamp(0.0, 1.0)).toColor();
-    final bottomColor = hsl.withLightness((hsl.lightness - 0.12).clamp(0.0, 1.0)).toColor();
+    // Gradients for depth — kept very subtle to avoid white band
+    final topColor =
+        hsl.withLightness((hsl.lightness + 0.04).clamp(0.0, 1.0)).toColor();
+    final midTopColor =
+        hsl.withLightness((hsl.lightness + 0.02).clamp(0.0, 1.0)).toColor();
+    final midBottomColor =
+        hsl.withLightness((hsl.lightness - 0.02).clamp(0.0, 1.0)).toColor();
+    final bottomColor =
+        hsl.withLightness((hsl.lightness - 0.06).clamp(0.0, 1.0)).toColor();
 
-    final visualKey = ValueKey('$id-${theme.fontColor.toARGB32()}-${theme.flipCardColor.toARGB32()}-${header != null}');
+    final visualKey = ValueKey(
+        '$id-${theme.fontColor.toARGB32()}-${theme.flipCardColor.toARGB32()}-${header != null}');
 
     return FlipWidget(
       key: visualKey,
@@ -221,175 +238,152 @@ class _FlipClockLayoutState extends State<FlipClockLayout> {
               width: 0.8,
             ),
           ),
-            child: Stack(
-              children: [
-                // Subtle shine on top
+          child: Stack(
+            children: [
+              if (header != null)
                 Positioned(
-                  top: 0,
+                  top: 12,
                   left: 0,
                   right: 0,
-                  height: cardHeight * 0.15,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(16),
-                        topRight: Radius.circular(16),
-                      ),
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.white.withValues(alpha: 51.0),
-                          Colors.white.withValues(alpha: 5.1),
-                        ],
-                      ),
+                  child: Text(
+                    header,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: theme.fontColor.withValues(alpha: 178.5),
+                      fontSize: widget.fontSize * 0.2,
+                      fontWeight: FontWeight.w500,
+                      letterSpacing: 0.5,
                     ),
                   ),
                 ),
-                
-                if (header != null)
-                  Positioned(
-                    top: 12,
-                    left: 0,
-                    right: 0,
-                    child: Text(
-                      header,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: theme.fontColor.withValues(alpha: 178.5),
-                        fontSize: widget.fontSize * 0.2,
-                        fontWeight: FontWeight.w500,
-                        letterSpacing: 0.5,
+
+              // Main number with shadow
+              Center(
+                child: Text(
+                  value.toString().padLeft(2, '0'),
+                  style: TextStyle(
+                    color: theme.fontColor,
+                    fontSize: widget.fontSize * 0.92,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 1.2,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black.withValues(alpha: 63.75),
+                        offset: const Offset(0, 3),
+                        blurRadius: 6,
                       ),
+                      Shadow(
+                        color: Colors.white.withValues(alpha: 20.4),
+                        offset: const Offset(0, -1),
+                        blurRadius: 2,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              Positioned(
+                top: cardHeight / 2 - 1,
+                left: 0,
+                right: 0,
+                child: Container(
+                  height: 2,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.black.withValues(alpha: 25.5),
+                        Colors.black.withValues(alpha: 63.75),
+                        Colors.black.withValues(alpha: 89.25),
+                        Colors.black.withValues(alpha: 63.75),
+                        Colors.black.withValues(alpha: 25.5),
+                      ],
+                      stops: const [0.0, 0.2, 0.5, 0.8, 1.0],
                     ),
                   ),
-                
-                // Main number with shadow
-                Center(
-                  child: Text(
-                    value.toString().padLeft(2, '0'),
-                    style: TextStyle(
-                      color: theme.fontColor,
-                      fontSize: widget.fontSize * 0.92,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 1.2,
-                      shadows: [
-                        Shadow(
-                          color: Colors.black.withValues(alpha: 63.75),
-                          offset: const Offset(0, 3),
-                          blurRadius: 6,
-                        ),
-                        Shadow(
-                          color: Colors.white.withValues(alpha: 20.4),
-                          offset: const Offset(0, -1),
-                          blurRadius: 2,
-                        ),
+                ),
+              ),
+              Positioned(
+                top: cardHeight / 2 - 3,
+                left: 0,
+                right: 0,
+                child: Container(
+                  height: 0.5,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.transparent,
+                        Colors.white.withValues(alpha: 76.5),
+                        Colors.white.withValues(alpha: 51.0),
+                        Colors.transparent,
                       ],
                     ),
                   ),
                 ),
-                
-                Positioned(
-                  top: cardHeight / 2 - 1,
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    height: 2,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.black.withValues(alpha: 25.5),
-                          Colors.black.withValues(alpha: 63.75),
-                          Colors.black.withValues(alpha: 89.25),
-                          Colors.black.withValues(alpha: 63.75),
-                          Colors.black.withValues(alpha: 25.5),
-                        ],
-                        stops: const [0.0, 0.2, 0.5, 0.8, 1.0],
-                      ),
+              ),
+              Positioned(
+                top: cardHeight / 2 + 1,
+                left: 0,
+                right: 0,
+                child: Container(
+                  height: 0.5,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.transparent,
+                        Colors.black.withValues(alpha: 38.25),
+                        Colors.black.withValues(alpha: 25.5),
+                        Colors.transparent,
+                      ],
                     ),
                   ),
                 ),
-                Positioned(
-                  top: cardHeight / 2 - 3,
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    height: 0.5,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Colors.transparent,
-                          Colors.white.withValues(alpha: 76.5),
-                          Colors.white.withValues(alpha: 51.0),
-                          Colors.transparent,
-                        ],
-                      ),
+              ),
+
+              // Reflection at the bottom
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                height: cardHeight * 0.1,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(16),
+                      bottomRight: Radius.circular(16),
+                    ),
+                    gradient: LinearGradient(
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                      colors: [
+                        Colors.black.withValues(alpha: 25.5),
+                        Colors.transparent,
+                      ],
                     ),
                   ),
                 ),
-                Positioned(
-                  top: cardHeight / 2 + 1,
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    height: 0.5,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Colors.transparent,
-                          Colors.black.withValues(alpha: 38.25),
-                          Colors.black.withValues(alpha: 25.5),
-                          Colors.transparent,
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                
-                // Reflection at the bottom
-                Positioned(
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  height: cardHeight * 0.1,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(16),
-                        bottomRight: Radius.circular(16),
-                      ),
-                      gradient: LinearGradient(
-                        begin: Alignment.bottomCenter,
-                        end: Alignment.topCenter,
-                        colors: [
-                          Colors.black.withValues(alpha: 25.5),
-                          Colors.transparent,
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
-        flipDirection: AxisDirection.down,
-      );
+              ),
+            ],
+          ),
+        );
+      },
+      flipDirection: AxisDirection.down,
+    );
   }
 
   Widget _buildSeparator(AppThemePreset theme) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: widget.fontSize * 0.15),
       child: AnimatedBuilder(
-        animation: ModalRoute.of(context)?.animation ?? kAlwaysCompleteAnimation,
+        animation:
+            ModalRoute.of(context)?.animation ?? kAlwaysCompleteAnimation,
         builder: (context, child) {
           return StreamBuilder<DateTime>(
             stream: widget.timeStream,
             builder: (context, snapshot) {
               final shouldPulse = (snapshot.data?.second ?? 0) % 2 == 0;
-              
+
               return AnimatedOpacity(
                 opacity: shouldPulse ? 1.0 : 0.4,
                 duration: const Duration(milliseconds: 500),
@@ -440,7 +434,7 @@ class _FlipClockLayoutState extends State<FlipClockLayout> {
 
   Widget _buildAmPmIndicator(DateTime now, AppThemePreset theme) {
     final amPm = now.hour < 12 ? 'AM' : 'PM';
-    
+
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: widget.fontSize * 0.25,
