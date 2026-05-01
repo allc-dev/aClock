@@ -1,0 +1,13 @@
+# Flutter Launcher Icons
+# Regenerar ícones do aplicativo
+
+# Recomendado (Versão atualizada):
+dart run flutter_launcher_icons
+
+# Antigo (Depreciado):
+# flutter pub run flutter_launcher_icons:main
+
+# --- RELEASE ---
+# Subir versão, commit, push e gerar AAB:
+# Use o arquivo build_aab.bat ou execute diretamente:
+powershell -File scripts\release.ps1 -Message "Sua mensagem de commit"
